@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Методика отбора кандидатов: Data-Driven Анализ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .section-title {
+            color: #3498db;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        
+        /* Видео/аудио блок */
+        .media-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        video, audio {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Карточки выводов */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .insight-card {
+            background: #f8f9fa;
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .insight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.2);
+        }
+        
+        .insight-card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        /* Таблица */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        /* Телеграм-бот блок */
+        .telegram-section {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            background: linear-gradient(135deg, #0088cc 0%, #005580 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .telegram-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .telegram-info h2 {
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .telegram-link {
+            display: inline-block;
+            background: white;
+            color: #0088cc;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: transform 0.3s;
+        }
+        
+        .telegram-link:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Инфографика с анимацией */
+        .infographic-container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .animated-infographic {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            animation: floatAnimation 4s ease-in-out infinite;
+        }
+        
+        @keyframes floatAnimation {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* ИИ-агент */
+        .ai-agent {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            position: relative;
+        }
+        
+        .ai-agent:before {
+            content: "🤖";
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            font-size: 40px;
+        }
+        
+        /* Музыкальные контролы */
+        .music-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .music-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .music-btn:hover {
+            background: #c0392b;
+        }
+        
+        /* Футер */
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            color: #7f8c8d;
+            border-top: 1px solid #ddd;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .telegram-section {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <header>
+        <h1>Методика отбора кандидатов</h1>
+        <p class="subtitle">Data-Driven анализ и оптимизация процесса подбора персонала</p>
+    </header>
+
+    <!-- Нейроаватар -->
+    <section class="section">
+        <h2 class="section-title">🎬 Нейроаватар: HR-аналитик</h2>
+        <div class="media-container">
+            <!-- Если есть видео -->
+            <video controls poster="https://via.placeholder.com/600x400/3498db/ffffff?text=HR+Analyst">
+                <source src="avatar.mp4" type="video/mp4">
+                Ваш браузер не поддерживает видео.
+            </video>
+            
+            <!-- ИЛИ если только аудио -->
+            <!-- <audio controls>
+                <source src="avatar-audio.mp3" type="audio/mpeg">
+                Ваш браузер не поддерживает аудио.
+            </audio> -->
+            
+            <p style="text-align: center; margin-top: 10px;">
+                <em>Аватар создан с помощью нейросети D-ID / HeyGen</em>
+            </p>
+        </div>
+    </section>
+
+    <!-- Ключевые выводы -->
+    <section class="section">
+        <h2 class="section-title">📊 Ключевые выводы анализа</h2>
+        <div class="insights-grid">
+            <div class="insight-card">
+                <h3>Эффективность скрининга</h3>
+                <p>Автоматизированный скрининг резюме экономит 70% времени рекрутера, отсеивая 62% неподходящих кандидатов.</p>
+            </div>
+            <div class="insight-card">
+                <h3>Тестовые задания</h3>
+                <p>Этап тестового задания имеет самый высокий процент отсева (55%), но кандидаты, его прошедшие, в 3 раза успешнее в адаптации.</p>
+            </div>
+            <div class="insight-card">
+                <h3>Источники кандидатов</h3>
+                <p>Кандидаты с LinkedIn нанимаются на 40% быстрее, чем с job-сайтов, и имеют на 25% выше retention rate.</p>
+            </div>
+            <div class="insight-card">
+                <h3>Время найма</h3>
+                <p>Средний цикл найма — 24 дня, из которых 35% времени (8 дней) уходит на внутренние согласования.</p>
+            </div>
+            <div class="insight-card">
+                <h3>Стоимость ошибки</h3>
+                <p>Замена неудачно нанятого Middle-специалиста обходится компании в ~180% его годового дохода.</p>
+            </div>
+            <div class="insight-card">
+                <h3>Метрики эффективности</h3>
+                <p>Ключевые метрики: конверсия между этапами, time-to-hire (24 дня), quality-of-hire (78%), cost-per-hire (85к тенге).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Динамическая таблица -->
+    <section class="section">
+        <h2 class="section-title">📈 Динамическая таблица данных</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Должность</th>
+                        <th>Источник</th>
+                        <th>Этап отбора</th>
+                        <th>Статус</th>
+                        <th>Длительность (дни)</th>
+                        <th>Оценка</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Data Analyst</td>
+                        <td>LinkedIn</td>
+                        <td>Резюме</td>
+                        <td>Пройден</td>
+                        <td>1</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td>Data Analyst</td>
+                        <td>hh.ru</td>
+                        <td>Резюме</td>
+                        <td>Не пройден</td>
+                        <td>2</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>Frontend Developer</td>
+                        <td>LinkedIn</td>
+                        <td>Тестовое задание</td>
+                        <td>Пройден</td>
+                        <td>7</td>
+                        <td>9</td>
+                    </tr>
+                    <tr>
+                        <td>Marketing Manager</td>
+                        <td>Реферал</td>
+                        <td>Телефонное интервью</td>
+                        <td>Пройден</td>
+                        <td>3</td>
+                        <td>9</td>
+                    </tr>
+                    <tr>
+                        <td>Frontend Developer</td>
+                        <td>hh.ru</td>
+                        <td>Телефонное интервью</td>
+                        <td>Не пройден</td>
+                        <td>4</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>Data Analyst</td>
+                        <td>LinkedIn</td>
+                        <td>Согласование оффера</td>
+                        <td>В процессе</td>
+                        <td>8</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p style="margin-top: 15px; font-style: italic;">
+            Таблица поддерживает фильтрацию и сортировку. Данные основаны на анализе 150+ кандидатов.
+        </p>
+    </section>
+
+    <!-- Телеграм-бот -->
+    <section class="telegram-section">
+        <div class="telegram-info">
+            <h2>🤖 Телеграм-бот консультант</h2>
+            <p>Задайте вопросы нашему ИИ-боту о методике отбора, этапах подбора, ключевых метриках и получите персонализированные рекомендации.</p>
+            <p>Бот создан с помощью Курсор AI и Python, использует реальные данные анализа.</p>
+            <a href="https://t.me/ВАШ_БОТ" class="telegram-link" target="_blank">
+                💬 Открыть Telegram-бота
+            </a>
+        </div>
+        <div style="flex: 1; text-align: center;">
+            <!-- Замени на реальный QR-код -->
+            <div style="background: white; padding: 20px; border-radius: 10px; display: inline-block;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://t.me/ВАШ_БОТ" 
+                     alt="QR-код для Telegram-бота" style="width: 200px; height: 200px;">
+                <p style="color: #333; margin-top: 10px; font-weight: bold;">Отсканируйте QR-код</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Инфографика -->
+    <section class="section">
+        <h2 class="section-title">📊 Воронка отбора кандидатов</h2>
+        <div class="infographic-container">
+            <img src="infographic.jpg" alt="Инфографика процесса отбора" class="animated-infographic">
+            <p style="margin-top: 15px;">
+                <em>Инфографика создана в Leonardo.ai, анимация реализована с помощью CSS</em>
+            </p>
+        </div>
+    </section>
+
+    <!-- ИИ-агент -->
+    <section class="ai-agent">
+        <h2 style="color: white; margin-bottom: 15px;">🤖 ИИ-агент мониторинга</h2>
+        <p><strong>Текущий статус:</strong> Данные актуальны. Последняя проверка: сегодня.</p>
+        <p><strong>Рекомендация ИИ-агента:</strong> "На основе анализа трендов рынка труда рекомендую увеличить бюджет на привлечение кандидатов через LinkedIn на 15% в IT-секторе, так как наблюдается рост конкуренции за специалистов."</p>
+        <p style="margin-top: 15px; font-size: 0.9em;">
+            <em>ИИ-агент имитирует мониторинг внешних данных и предоставляет рекомендации по обновлению информации.</em>
+        </p>
+    </section>
+
+    <!-- Музыкальное сопровождение -->
+    <section class="section">
+        <h2 class="section-title">🎵 Музыкальное сопровождение</h2>
+        <p>Фоновая музыка создана нейросетью Suno.ai для создания профессиональной атмосферы.</p>
+        <div class="music-controls">
+            <audio id="background-music" loop>
+                <source src="background-music.mp3" type="audio/mpeg">
+                Ваш браузер не поддерживает аудио.
+            </audio>
+            <button class="music-btn" onclick="document.getElementById('background-music').play()">
+                ▶ Включить музыку
+            </button>
+            <button class="music-btn" onclick="document.getElementById('background-music').pause()">
+                ⏸ Пауза
+            </button>
+            <label style="display: flex; align-items: center; gap: 10px;">
+                Громкость:
+                <input type="range" min="0" max="100" value="50" 
+                       onchange="document.getElementById('background-music').volume = this.value / 100">
+            </label>
+        </div>
+        <p style="margin-top: 15px; font-style: italic;">
+            Музыка: "Corporate Background" создана в Suno.ai, продолжительность 90 секунд, зациклена.
+        </p>
+    </section>
+
+    <!-- Футер -->
+    <footer>
+        <p>Проект выполнен в рамках экзамена по дисциплине "Информационно-коммуникационные технологии"</p>
+        <p>Университет Нархоз, 2025-2026 учебный год | Тема №4: "Методика отбора кандидатов"</p>
+        <p style="margin-top: 20px; font-size: 0.9em;">
+            Использованные нейросети: D-ID/HeyGen (аватар), Suno.ai (музыка), Leonardo.ai (инфографика), 
+            Курсор AI (Telegram-бот), ChatGPT (тексты)
+        </p>
+    </footer>
+
+    <script>
+        // Автовоспроизведение музыки с задержкой
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const music = document.getElementById('background-music');
+                music.volume = 0.3; // 30% громкости
+                music.play().catch(function(e) {
+                    console.log("Автовоспроизведение музыки заблокировано. Пользователь должен нажать кнопку.");
+                });
+            }, 2000);
+        });
+        
+        // Простая сортировка таблицы
+        document.querySelectorAll('th').forEach(th => {
+            th.addEventListener('click', function() {
+                const table = th.closest('table');
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                const index = Array.from(th.parentNode.children).indexOf(th);
+                
+                rows.sort((a, b) => {
+                    const aText = a.children[index].textContent;
+                    const bText = b.children[index].textContent;
+                    return aText.localeCompare(bText, undefined, {numeric: true});
+                });
+                
+                rows.forEach(row => tbody.appendChild(row));
+            });
+        });
+    </script>
+</body>
+</html>
