@@ -423,30 +423,135 @@
     </section>
 
     <!-- Музыкальное сопровождение -->
-    <section class="section">
-        <h2 class="section-title">🎵 Музыкальное сопровождение</h2>
-        <p>Фоновая музыка создана нейросетью Suno.ai для создания профессиональной атмосферы.</p>
-        <div class="music-controls">
-            <audio id="background-music" loop>
-                <source src="background_music.mp3" type="audio/mpeg">
-                Ваш браузер не поддерживает аудио.
-            </audio>
-            <button class="music-btn" onclick="document.getElementById('background-music').play()">
-                ▶ Включить музыку
-            </button>
-            <button class="music-btn" onclick="document.getElementById('background-music').pause()">
-                ⏸ Пауза
-            </button>
-            <label style="display: flex; align-items: center; gap: 10px;">
-                Громкость:
-                <input type="range" min="0" max="100" value="50" 
-                       onchange="document.getElementById('background-music').volume = this.value / 100">
-            </label>
-        </div>
-        <p style="margin-top: 15px; font-style: italic;">
-            Музыка: "Corporate Background" создана в Suno.ai, продолжительность 90 секунд, зациклена.
-        </p>
-    </section>
+<section class="section">
+    <h2 class="section-title">🎵 Музыкальное сопровождение</h2>
+    <p>Фоновая музыка создана нейросетью Suno.ai для создания профессиональной атмосферы.</p>
+    
+    <div class="music-controls">
+        <!-- Аудио элемент (скрытый) -->
+        <audio id="background-music" loop>
+            <source src="background_music.mp3" type="audio/mpeg">
+            Ваш браузер не поддерживает аудио.
+        </audio>
+        
+        <button class="music-btn" onclick="playMusic()">
+            ▶ Включить музыку
+        </button>
+        <button class="music-btn" onclick="pauseMusic()">
+            ⏸ Пауза
+        </button>
+        <button class="music-btn" onclick="setVolume(0.1)">
+            🔈 Тише
+        </button>
+        <button class="music-btn" onclick="setVolume(0.5)">
+            🔉 Громче
+        </button>
+        
+        <label style="display: flex; align-items: center; gap: 10px;">
+            Громкость:
+            <input type="range" id="volume-slider" min="0" max="100" value="30" 
+                   oninput="changeVolume(this.value)">
+        </label>
+    </div>
+    
+    <p style="margin-top: 15px; font-style: italic;">
+        Музыка: "Corporate Background" создана в Suno.ai, продолжительность 90 секунд, зациклена.
+    </p>
+    
+    <!-- Состояние музыки -->
+    <p id="music-status" style="margin-top: 10px; color: #2ecc71; font-weight: bold;">
+        🎵 Музыка загружена. Кликните в любом месте сайта для запуска!
+    </p>
+</section>
+
+<script>
+    let musicStarted = false;
+    const music = document.getElementById('background-music');
+    
+    // Функции управления
+    function playMusic() {
+        music.play().then(() => {
+            musicStarted = true;
+            updateStatus('🎶 Музыка играет');
+        }).catch(e => {
+            updateStatus('❌ Не удалось запустить музыку. Кликните по сайту.');
+        });
+    }
+    
+    function pauseMusic() {
+        music.pause();
+        updateStatus('⏸ Музыка на паузе');
+    }
+    
+    function setVolume(level) {
+        music.volume = level;
+        document.getElementById('volume-slider').value = level * 100;
+        updateStatus(`🔊 Громкость: ${Math.round(level * 100)}%`);
+    }
+    
+    function changeVolume(value) {
+        music.volume = value / 100;
+    }
+    
+    function updateStatus(text) {
+        document.getElementById('music-status').textContent = text;
+    }
+    
+    // 1. Автозапуск с задержкой 3 секунды после загрузки
+    window.addEventListener('load', function() {
+        setTimeout(() => {
+            if (!musicStarted) {
+                music.volume = 0.3; // 30% громкости
+                music.play().then(() => {
+                    musicStarted = true;
+                    updateStatus('🎶 Автозапуск музыки...');
+                }).catch(e => {
+                    updateStatus('⏳ Автозапуск заблокирован. Кликните в любом месте.');
+                });
+            }
+        }, 3000);
+    });
+    
+    // 2. Клик по ЛЮБОМУ месту сайта запускает музыку
+    document.addEventListener('click', function(event) {
+        if (!musicStarted) {
+            // Не запускаем, если кликнули на кнопки управления
+            if (event.target.closest('.music-btn')) return;
+            
+            music.volume = 0.3;
+            music.play().then(() => {
+                musicStarted = true;
+                updateStatus('🎶 Музыка запущена по клику!');
+            });
+        }
+    });
+    
+    // 3. Клик по колесику громкости тоже запускает
+    document.getElementById('volume-slider').addEventListener('click', function() {
+        if (!musicStarted) {
+            music.volume = this.value / 100;
+            music.play().then(() => {
+                musicStarted = true;
+                updateStatus('🎶 Музыка запущена!');
+            });
+        }
+    });
+    
+    // 4. Даже движение мышкой может запустить (опционально)
+    let mouseMoveTimer;
+    document.addEventListener('mousemove', function() {
+        if (!musicStarted) {
+            clearTimeout(mouseMoveTimer);
+            mouseMoveTimer = setTimeout(() => {
+                music.volume = 0.2;
+                music.play().then(() => {
+                    musicStarted = true;
+                    updateStatus('🎶 Музыка запущена при движении мыши!');
+                });
+            }, 2000); // Запуск через 2 секунды бездействия
+        }
+    });
+</script>
 
     <!-- Футер -->
     <footer>
