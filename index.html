@@ -593,5 +593,99 @@
             });
         });
     </script>
+    <!-- ================= ЧАТ-БОТ ================= -->
+<div id="site-chat">
+  <div id="chat-header">🤖 ИИ-консультант</div>
+  <div id="chat-box"></div>
+  <input id="chat-input" placeholder="Задайте вопрос по отбору кандидатов..." />
+  <button onclick="sendMessage()">Отправить</button>
+</div>
+
+<style>
+#site-chat {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 320px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  z-index: 9999;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+#chat-header {
+  background: #3498db;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
+#chat-box {
+  height: 220px;
+  padding: 10px;
+  overflow-y: auto;
+  border-bottom: 1px solid #ddd;
+}
+
+#chat-box div {
+  margin-bottom: 8px;
+}
+
+#chat-input {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-top: 1px solid #ddd;
+  outline: none;
+}
+
+#site-chat button {
+  width: 100%;
+  padding: 8px;
+  background: #3498db;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#site-chat button:hover {
+  background: #2980b9;
+}
+</style>
+<!-- =========================================== -->
+<script>
+async function sendMessage() {
+  const input = document.getElementById("chat-input");
+  const chatBox = document.getElementById("chat-box");
+
+  const userText = input.value.trim();
+  if (!userText) return;
+
+  // сообщение пользователя
+  chatBox.innerHTML += `<div><b>Вы:</b> ${userText}</div>`;
+  chatBox.scrollTop = chatBox.scrollHeight;
+  input.value = "";
+
+  try {
+    const response = await fetch("http://localhost:3000/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: userText })
+    });
+
+    const data = await response.json();
+
+    // ответ ИИ
+    chatBox.innerHTML += `<div><b>ИИ:</b> ${data.reply}</div>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+  } catch (error) {
+    chatBox.innerHTML += `<div style="color:red;">Ошибка соединения с ИИ</div>`;
+  }
+}
+</script>
+
 </body>
 </html>
